@@ -1,0 +1,11 @@
+{_, ErlOpts} = lists:keyfind(erl_opts, 1, CONFIG).
+Rel = try erlang:system_info(otp_release) of
+    Vsn ->
+        {match,[Maj]} = re:run(Vsn, "^R?([0-9]+)", [{capture,[1],list}]),
+        Maj
+    catch _:_ ->
+        "OLD"
+end,
+Tup = {d, list_to_atom("ERLANG_OTP_VERSION_"++Rel)},
+
+lists:keystore(erl_opts, 1, CONFIG, {erl_opts, [Tup|ErlOpts]}).
